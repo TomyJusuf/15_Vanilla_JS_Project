@@ -84,22 +84,14 @@ const menu = [
 ];
 
 const sectionCenter = document.querySelector('.section-center');
-const img = document.querySelector('.photo');
-const nameFood = document.querySelector('header');
-console.log();
-const nameOfMenuu = nameFood.childNodes.item(0).nextSibling;
-nameOfMenuu.textContent;
-const price = document.querySelector('.price');
 
-const text = document.querySelector('.item-text');
-
+// looping - method 1
 for (const key in menu) {
   if (Object.hasOwnProperty.call(menu, key)) {
     const element = menu[key];
-    console.log(element);
 
     const DOMMenu = `
- <article class="menu-item">
+    <article class="menu-item">
           <img src="${element.img}" class="photo" alt="menu item" />
           <div class="item-info">
             <header>
@@ -110,9 +102,63 @@ for (const key in menu) {
              ${element.desc}
             </p>
           </div>
-        </article>
-      </div>
+    </article>    
 `;
-    sectionCenter.insertAdjacentHTML('beforeend', DOMMenu);
+    // sectionCenter.insertAdjacentHTML('beforeend', DOMMenu);
   }
+}
+
+// load items
+window.addEventListener('DOMContentLoaded', () => {
+  displayMenuItem(menu);
+});
+
+//filter items
+const filterBtn = document.querySelectorAll('.filter-btn');
+filterBtn.forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    // console.log(e.currentTarget);
+    // console.log(e.target.dataset); // <--dataid="brakfast"
+    // console.log(e.target.dataset.id); //<-- brakfast
+    // console.log(e.currentTarget.dataset); //  DOMStringMap {id: 'breakfast'}
+
+    const category =
+      e.currentTarget.dataset
+        .id; /**id name of button which was clicked, event */
+    //   dataset property //
+    const menuCategory = menu.filter((menuItem) => {
+      if (menuItem.category === category) {
+        console.log(menuItem);
+        return menuItem;
+      }
+    });
+    if (category === 'all') {
+      displayMenuItem(menu);
+    } else {
+      displayMenuItem(menuCategory);
+    }
+  });
+});
+
+// looping -  method 2
+
+function displayMenuItem(menuItems) {
+  let displayMenu = menuItems.map((item) => {
+    // console.log(item);
+
+    return `<article class="menu-item">
+          <img src="${item.img}" class="photo" alt="menu item" />
+          <div class="item-info">
+            <header>
+              <h4>$ ${item.title}</h4>
+              <h4 class="price">$${item.price}</h4>
+            </header>
+            <p class="item-text">
+             ${item.desc}
+            </p>
+          </div>
+    </article>
+    `;
+  });
+  sectionCenter.innerHTML = displayMenu.join('');
 }
