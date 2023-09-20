@@ -5,7 +5,7 @@ const myVideo = document.querySelector('.video-container');
 btn.addEventListener('click', (e) => {
   if (!btn.classList.contains('slide')) {
     btn.classList.add('slide');
-    console.log(e);
+
     myVideo.pause();
   } else {
     btn.classList.remove('slide');

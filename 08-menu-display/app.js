@@ -84,68 +84,16 @@ const menu = [
 ];
 
 const sectionCenter = document.querySelector('.section-center');
-
-// looping - method 1
-for (const key in menu) {
-  if (Object.hasOwnProperty.call(menu, key)) {
-    const element = menu[key];
-
-    const DOMMenu = `
-    <article class="menu-item">
-          <img src="${element.img}" class="photo" alt="menu item" />
-          <div class="item-info">
-            <header>
-              <h4>$ ${element.title}</h4>
-              <h4 class="price">$${element.price}</h4>
-            </header>
-            <p class="item-text">
-             ${element.desc}
-            </p>
-          </div>
-    </article>    
-`;
-    // sectionCenter.insertAdjacentHTML('beforeend', DOMMenu);
-  }
-}
-
+const btnContainer = document.querySelector('.btn-container');
 // load items
 window.addEventListener('DOMContentLoaded', () => {
   displayMenuItem(menu);
+  displayMenuButtons();
 });
 
-//filter items
-const filterBtn = document.querySelectorAll('.filter-btn');
-filterBtn.forEach((btn) => {
-  btn.addEventListener('click', (e) => {
-    // console.log(e.currentTarget);
-    // console.log(e.target.dataset); // <--dataid="brakfast"
-    // console.log(e.target.dataset.id); //<-- brakfast
-    // console.log(e.currentTarget.dataset); //  DOMStringMap {id: 'breakfast'}
-
-    const category =
-      e.currentTarget.dataset
-        .id; /**id name of button which was clicked, event */
-    //   dataset property //
-    const menuCategory = menu.filter((menuItem) => {
-      if (menuItem.category === category) {
-        console.log(menuItem);
-        return menuItem;
-      }
-    });
-    if (category === 'all') {
-      displayMenuItem(menu);
-    } else {
-      displayMenuItem(menuCategory);
-    }
-  });
-});
-
-// looping -  method 2
-
+// looping
 function displayMenuItem(menuItems) {
   let displayMenu = menuItems.map((item) => {
-    // console.log(item);
-
     return `<article class="menu-item">
           <img src="${item.img}" class="photo" alt="menu item" />
           <div class="item-info">
@@ -161,4 +109,52 @@ function displayMenuItem(menuItems) {
     `;
   });
   sectionCenter.innerHTML = displayMenu.join('');
+}
+
+function displayMenuButtons() {
+  // reduce method
+  const categories = menu.reduce(
+    (acc, curr) => {
+      if (!acc.includes(curr.category)) {
+        acc.push(curr.category);
+      }
+      return acc;
+    },
+    ['all']
+  );
+
+  const categoryBTN = categories
+    .map((category) => {
+      return ` <button class="filter-btn" type="button" data-id="${category}">${category}</button>
+    `;
+    })
+    .join('');
+  btnContainer.innerHTML = categoryBTN;
+
+  const filterBtn = document.querySelectorAll('.filter-btn');
+  //filter items
+  filterBtn.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      // console.log(e.currentTarget);
+      // console.log(e.target.dataset); // <--dataid="brakfast"
+      // console.log(e.target.dataset.id); //<-- brakfast
+      // console.log(e.currentTarget.dataset); // <-- DOMStringMap {id: 'breakfast'}
+
+      const category =
+        e.currentTarget.dataset
+          .id; /**id name of button which was clicked, event */
+      //   dataset property //
+      const menuCategory = menu.filter((menuItem) => {
+        if (menuItem.category === category) {
+          console.log(menuItem);
+          return menuItem;
+        }
+      });
+      if (category === 'all') {
+        displayMenuItem(menu);
+      } else {
+        displayMenuItem(menuCategory);
+      }
+    });
+  });
 }
